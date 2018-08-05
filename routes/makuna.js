@@ -69,8 +69,8 @@ router.post('/performance', function(request, response, next) {
              };*/
 
 
-                const scoring_url = "https://us-south.ml.cloud.ibm.com/v3/wml_instances/fa2dcdb1-236a-467c-af71-017eb3a83511/deployments/0f700e4b-1abd-4f67-b3f2-9f6cabacf5cc/online";
-
+                //const scoring_url = "https://us-south.ml.cloud.ibm.com/v3/wml_instances/fa2dcdb1-236a-467c-af71-017eb3a83511/deployments/0f700e4b-1abd-4f67-b3f2-9f6cabacf5cc/online";
+                const scoring_url = "https://us-south.ml.cloud.ibm.com/v3/wml_instances/fa2dcdb1-236a-467c-af71-017eb3a83511/deployments/f3a6a3e6-f809-467d-8b37-09629a92426e/online";
 
 
                 apiPost(scoring_url, wmlToken, payload, function (resp) {
