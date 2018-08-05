@@ -17,12 +17,6 @@ router.post('/production', function(request, response, next) {
     var performance = request.body.performance;
     var product_name = request.body.product_name;
 
-    /*var department = "Santander";
-    var year = 2007;
-    var production =1000;
-    var performance = 14;
-    var product_name = "lulo";*/
-
     apiGet(wml_credentials.get("url"), wml_credentials.get("username"), wml_credentials.get("password"),
         function (res) {
 
@@ -37,14 +31,58 @@ router.post('/production', function(request, response, next) {
                 const token = parsedGetResponse.token
                 const wmlToken = "Bearer " + token;
 
-
-                // NOTE: manually define and pass the array(s) of values to be scored in the next line
-
                 const payload = ' {"fields": ["departament", "year", "production", "performance", "product_name"],' +
                     '"values": [["'+department+'",'+year+','+production+','+performance+',"'+product_name+'"]]}';
                 const scoring_url = "https://us-south.ml.cloud.ibm.com/v3/wml_instances/fa2dcdb1-236a-467c-af71-017eb3a83511/deployments/8aee2c5d-49c3-4cf5-bc33-9aecae1e5ec0/online";
 
-                console.log(payload);
+                apiPost(scoring_url, wmlToken, payload, function (resp) {
+                    var parsedPostResponse;
+                    try {
+                        parsedPostResponse = JSON.parse(this.responseText);
+                    } catch (ex) {
+                        // TODO: handle parsing exception
+                    }
+                    console.log("Scoring response");
+                    console.log(parsedPostResponse);
+                    response.send(parsedPostResponse);
+                }, function (error) {
+                    console.log(error);
+                });
+
+            } else {
+                console.log("Failed to retrieve Bearer token");
+            }
+        }, function (err) {
+            console.log(err);
+        });
+});
+
+router.post('/performance', function(request, response, next) {
+    var department = request.body.departament;
+    var year = request.body.year;
+    var production = request.body.production;
+    var performance = request.body.performance;
+    var product_name = request.body.product_name;
+    var id = request.body.id;
+    var product_id = request.body.product_id;
+
+    apiGet(wml_credentials.get("url"), wml_credentials.get("username"), wml_credentials.get("password"),
+        function (res) {
+            var parsedGetResponse;
+            try {
+                parsedGetResponse = JSON.parse(this.responseText);
+            } catch(ex) {
+                // TODO: handle parsing exception
+                console.log("Error parsed json");
+            }
+            if (parsedGetResponse && parsedGetResponse.token) {
+                const token = parsedGetResponse.token
+                const wmlToken = "Bearer " + token;
+
+                const payload =  '{"fields": ["id", "product_id", "departament", "year", "production", "performance", "product_name"],'+
+                '"values": [['+id+','+product_id+',"'+department+'",'+ year+','+production+','+ performance+',"'+product_name+'"]]}';
+
+                const scoring_url = "https://us-south.ml.cloud.ibm.com/v3/wml_instances/fa2dcdb1-236a-467c-af71-017eb3a83511/deployments/ebf955b9-ac15-4636-89b1-02f7309a3710/online";
 
                 apiPost(scoring_url, wmlToken, payload, function (resp) {
                     var parsedPostResponse;
