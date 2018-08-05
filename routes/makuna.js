@@ -9,15 +9,19 @@ wml_credentials.set("username", "c84b1419-dfe1-4437-b537-363189896df6");
 wml_credentials.set("password", "8218d4dc-4df5-4f50-9c07-8e48e1cbfcab");
 
 /* GET users listing. */
-router.post('/performance', function(request, response, next) {
+router.post('/production', function(request, response, next) {
 
-    var id = request.body.id;
-    var product_id = request.body.product_id;
     var department = request.body.departament;
     var year = request.body.year;
     var production = request.body.production;
     var performance = request.body.performance;
     var product_name = request.body.product_name;
+
+    var department = "Santander";
+    var year = 2007;
+    var production =1000;
+    var performance = 14;
+    var product_name = "lulo";
 
     apiGet(wml_credentials.get("url"), wml_credentials.get("username"), wml_credentials.get("password"),
         function (res) {
@@ -33,45 +37,14 @@ router.post('/performance', function(request, response, next) {
                 const token = parsedGetResponse.token
                 const wmlToken = "Bearer " + token;
 
-                var id = request.body.id;
-                var product_id = request.body.product_id;
-                var department = request.body.departament;
-                var year = request.body.year;
-                var production = request.body.production;
-                var performance = request.body.performance;
-                var product_name = request.body.product_name;
-
 
                 // NOTE: manually define and pass the array(s) of values to be scored in the next line
-                const payload = ' {"fields": ["id", "product_id", "department", "year", "production", "performance", "product_name"],' +
-                    ' "values": [['+id+','+product_id+','+department+','+year+','+production+','+performance+','+product_name+','+']]}';
-                //const scoring_url = "https://us-south.ml.cloud.ibm.com/v3/wml_instances/fa2dcdb1-236a-467c-af71-017eb3a83511/deployments/df386eb2-7859-4551-b2c4-ca2a444d131e/online";
 
-             /*const payload= {
-                 "fields": [
-                     "id",
-                     "product_id",
-                     "departament",
-                     "year",
-                     "production",
-                     "performance",
-                     "product_name"
-                 ],
-                 "values": [
-                     id,
-                     product_id,
-                     department,
-                     year,
-                     production,
-                     performance,
-                     product_name
-                 ]
-             };*/
+                const payload = ' {"fields": ["departament", "year", "production", "performance", "product_name"],' +
+                    '"values": [["'+department+'",'+year+','+production+','+performance+',"'+product_name+'"]]}';
+                const scoring_url = "https://us-south.ml.cloud.ibm.com/v3/wml_instances/fa2dcdb1-236a-467c-af71-017eb3a83511/deployments/8aee2c5d-49c3-4cf5-bc33-9aecae1e5ec0/online";
 
-
-                //const scoring_url = "https://us-south.ml.cloud.ibm.com/v3/wml_instances/fa2dcdb1-236a-467c-af71-017eb3a83511/deployments/0f700e4b-1abd-4f67-b3f2-9f6cabacf5cc/online";
-                const scoring_url = "https://us-south.ml.cloud.ibm.com/v3/wml_instances/fa2dcdb1-236a-467c-af71-017eb3a83511/deployments/f3a6a3e6-f809-467d-8b37-09629a92426e/online";
-
+                console.log(payload);
 
                 apiPost(scoring_url, wmlToken, payload, function (resp) {
                     var parsedPostResponse;
@@ -113,7 +86,7 @@ function apiPost(scoring_url, token, payload, loadCallback, errorCallback){
     oReq.addEventListener("load", loadCallback);
     oReq.addEventListener("error", errorCallback);
     oReq.open("POST", scoring_url);
-    //oReq.setRequestHeader("Accept", "application/json");
+    oReq.setRequestHeader("Accept", "application/json");
     oReq.setRequestHeader("Authorization", token);
     oReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     oReq.send(payload);
