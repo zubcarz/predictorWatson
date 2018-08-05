@@ -17,11 +17,11 @@ router.post('/production', function(request, response, next) {
     var performance = request.body.performance;
     var product_name = request.body.product_name;
 
-    var department = "Santander";
+    /*var department = "Santander";
     var year = 2007;
     var production =1000;
     var performance = 14;
-    var product_name = "lulo";
+    var product_name = "lulo";*/
 
     apiGet(wml_credentials.get("url"), wml_credentials.get("username"), wml_credentials.get("password"),
         function (res) {
